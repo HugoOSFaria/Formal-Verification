@@ -1,0 +1,116 @@
+use  int.Int
+use  list.List
+use  list.Mem
+use  list.Append
+use  list.Permut
+use  list.Length
+use  list.SortedInt
+use  list.NumOcc
+
+
+     
+
+  type tree 'a = Empty | Node (tree 'a) 'a (tree 'a)
+
+  let rec function size (t: tree 'a) : int =
+    match t with
+    |  Empty -> 0
+    |  Node l _ r -> 1 + (size l) + (size r)
+    end
+                                     
+  predicate memt (t : tree int) (k : int) = 
+   match t with
+   | Empty -> false
+   | Node t1 x t2 -> (k = x) \/ memt t1 k \/ memt t2 k
+   end
+
+  let rec predicate leq_tree (x : int) (t : tree int) = 
+   ensures { result <-> forall k : int. memt t k -> k <= x }
+   match t with
+   | Empty -> true
+   | Node t1 k t2 -> leq_tree x t1 && k <= x && leq_tree x t2
+   end
+
+  predicate geq_tree (x : int) (t : tree int) =
+   forall k : int. memt t k -> x <= k
+
+  predicate sortedBT (t : tree int) =
+   match t with
+   | Empty -> true
+   | Node t1 x t2 -> sortedBT t1 /\ sortedBT t2 /\ 
+                     leq_tree x t1 /\ geq_tree x t2
+   end
+
+  function num_occ (x: 'a) (t: tree 'a) : int = 
+   match t with
+   | Empty -> 0
+   | Node t1 y t2 -> (if x = y then 1 else 0) + num_occ x t1 + num_occ x t2
+   end
+
+   
+
+
+
+  let rec add (t : tree int) (v : int) : tree int =
+      requires { sortedBT t }
+      ensures  { sortedBT result }
+      ensures  { size result = size t + 1 }
+      ensures  { forall x : int. memt result x <-> (memt t x \/ x = v) }
+      ensures  { forall x : int. num_occ x result = if x = v then 1 + num_occ x t else num_occ x t}
+      variant { size t }
+  match t with
+  | Empty -> Node (Empty) v (Empty)
+  | Node t1 x t2 ->
+         if v <= x then Node (add t1 v) x t2 else Node t1 x (add t2 v)
+  end
+
+
+  let rec function mkTree (l:list int) : tree int
+    ensures { sortedBT result }
+    ensures { forall c : int. memt result c <-> mem c l }
+    ensures { forall c : int. num_occ c result = NumOcc.num_occ c l}
+    variant { l }
+    =
+    match l with
+    | Nil -> Empty
+    | Cons h t -> add (mkTree t) h
+    end
+    
+  function addToList (l : list int) (x : int) : list int =
+    match l with
+    | Nil -> Cons x Nil
+    | Cons c l1 -> Cons c (addToList l1 x)
+    end
+      
+  let rec function biggerThan (l:list int) (x : int) : list int =
+    ensures { forall c : int. mem c result -> c > x }
+    ensures { forall c : int. mem c result -> mem c l}
+    ensures { forall c : int. c > x -> NumOcc.num_occ c result = NumOcc.num_occ c l }
+    ensures { length result <= length l }
+    variant { length l }
+    match l with
+    | Nil -> Nil
+    | Cons c l1 -> if c > x then Cons c (biggerThan l1 x) else biggerThan l1 x
+    end
+  
+  let rec function smallerThan (l:list int) (x : int) : list int =
+    ensures { forall c : int. mem c result -> c <= x }
+    ensures { forall c : int. mem c result -> mem c l}
+    ensures { forall c : int. c <= x -> NumOcc.num_occ c result = NumOcc.num_occ c l }
+    ensures { length result <= length l }
+    variant { length l }
+    match l with
+    | Nil -> Nil
+    | Cons c l1 -> if c <= x then Cons c (smallerThan l1 x) else smallerThan l1 x
+    end
+    
+  let rec function mkTree2 (l:list int) : tree int =
+    ensures { sortedBT result }
+    (*ensures  { size result = length l }*)
+    ensures { forall x : int. memt result x <-> mem x l }
+    ensures  { forall x : int. num_occ x result = NumOcc.num_occ x l}
+    variant { length l }
+    match l with
+    | Nil -> Empty
+    | Cons c l1 -> Node (mkTree2 (smallerThan l1 c)) c (mkTree2 (biggerThan l1 c))
+    end 

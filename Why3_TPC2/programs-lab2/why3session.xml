@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE why3session PUBLIC "-//Why3//proof session v5//EN"
+"http://why3.lri.fr/why3session.dtd">
+<why3session shape_version="6">
+<prover id="0" name="Z3" version="4.8.6" timelimit="1" steplimit="0" memlimit="1000"/>
+<prover id="1" name="CVC4" version="1.7" timelimit="1" steplimit="0" memlimit="1000"/>
+<file format="whyml">
+<path name=".."/><path name="programs-lab2.mlw"/>
+<theory name="SelectionSort">
+ <goal name="select&#39;vc" expl="VC for select">
+ <proof prover="0" timelimit="5"><result status="highfailure" time="2.54" steps="7545708"/></proof>
+ <proof prover="1" timelimit="5"><result status="timeout" time="5.00" steps="540191"/></proof>
+ </goal>
+ <goal name="swap&#39;vc" expl="VC for swap" proved="true">
+ <proof prover="1" timelimit="5"><result status="valid" time="0.22" steps="18084"/></proof>
+ </goal>
+ <goal name="selection_sort&#39;vc" expl="VC for selection_sort">
+ </goal>
+ <goal name="selection_sort_2&#39;vc" expl="VC for selection_sort_2" proved="true">
+ <proof prover="0"><result status="highfailure" time="0.30" steps="337013"/></proof>
+ <proof prover="1"><result status="timeout" time="10.00" steps="327921"/></proof>
+ <transf name="split_vc" proved="true" >
+  <goal name="selection_sort_2&#39;vc.0" expl="loop invariant init" proved="true">
+  <proof prover="1"><result status="valid" time="0.17" steps="9475"/></proof>
+  </goal>
+  <goal name="selection_sort_2&#39;vc.1" expl="loop invariant init" proved="true">
+  <proof prover="1"><result status="valid" time="0.16" steps="9735"/></proof>
+  </goal>
+  <goal name="selection_sort_2&#39;vc.2" expl="loop invariant init" proved="true">
+  <proof prover="1"><result status="valid" time="0.12" steps="8407"/></proof>
+  </goal>
+  <goal name="selection_sort_2&#39;vc.3" expl="loop invariant init" proved="true">
+  <proof prover="1"><result status="valid" time="0.13" steps="8338"/></proof>
+  </goal>
+  <goal name="selection_sort_2&#39;vc.4" expl="loop invariant init" proved="true">
+  <proof prover="1"><result status="valid" time="0.13" steps="9160"/></proof>
+  </goal>
+  <goal name="selection_sort_2&#39;vc.5" expl="index in array bounds" proved="true">
+  <proof prover="1"><result status="valid" time="0.16" steps="11039"/></proof>
+  </goal>
+  <goal name="selection_sort_2&#39;vc.6" expl="index in array bounds" proved="true">
+  <proof prover="1"><result status="valid" time="0.17" steps="11020"/></proof>
+  </goal>
+  <goal name="selection_sort_2&#39;vc.7" expl="loop invariant preservation" proved="true">
+  <proof prover="1"><result status="valid" time="0.13" steps="9161"/></proof>
+  </goal>
+  <goal name="selection_sort_2&#39;vc.8" expl="loop invariant preservation" proved="true">
+  <proof prover="1"><result status="valid" time="0.17" steps="10703"/></proof>
+  </goal>
+  <goal name="selection_sort_2&#39;vc.9" expl="loop invariant preservation" proved="true">
+  <proof prover="1"><result status="valid" time="0.15" steps="9030"/></proof>
+  </goal>
+  <goal name="selection_sort_2&#39;vc.10" expl="loop invariant preservation" proved="true">
+  <proof prover="1"><result status="valid" time="0.16" steps="10471"/></proof>
+  </goal>
+  <goal name="selection_sort_2&#39;vc.11" expl="precondition" proved="true">
+  <proof prover="1"><result status="valid" time="0.15" steps="10983"/></proof>
+  </goal>
+  <goal name="selection_sort_2&#39;vc.12" expl="loop invariant preservation" proved="true">
+  <proof prover="1"><result status="valid" time="0.40" steps="32275"/></proof>
+  </goal>
+  <goal name="selection_sort_2&#39;vc.13" expl="loop invariant preservation" proved="true">
+  <proof prover="1"><result status="valid" time="0.18" steps="12117"/></proof>
+  </goal>
+  <goal name="selection_sort_2&#39;vc.14" expl="loop invariant preservation" proved="true">
+  <proof prover="1"><result status="valid" time="0.42" steps="40861"/></proof>
+  </goal>
+  <goal name="selection_sort_2&#39;vc.15" expl="out of loop bounds" proved="true">
+  <proof prover="1"><result status="valid" time="0.15" steps="11235"/></proof>
+  </goal>
+  <goal name="selection_sort_2&#39;vc.16" expl="postcondition" proved="true">
+  <proof prover="1"><result status="valid" time="0.15" steps="9471"/></proof>
+  </goal>
+  <goal name="selection_sort_2&#39;vc.17" expl="postcondition" proved="true">
+  <proof prover="1"><result status="valid" time="0.12" steps="8401"/></proof>
+  </goal>
+  <goal name="selection_sort_2&#39;vc.18" expl="out of loop bounds" proved="true">
+  <proof prover="1"><result status="valid" time="0.14" steps="9281"/></proof>
+  </goal>
+ </transf>
+ </goal>
+</theory>
+<theory name="InsertionSort">
+ <goal name="insertion_sort&#39;vc" expl="VC for insertion_sort">
+ </goal>
+ <goal name="insertion_sort2&#39;vc" expl="VC for insertion_sort2">
+ </goal>
+ <goal name="swap&#39;vc" expl="VC for swap">
+ </goal>
+ <goal name="insertion_sort3&#39;vc" expl="VC for insertion_sort3" proved="true">
+ <proof prover="0"><result status="timeout" time="1.00" steps="1267391"/></proof>
+ <proof prover="1"><result status="timeout" time="1.00" steps="77002"/></proof>
+ <transf name="split_vc" proved="true" >
+  <goal name="insertion_sort3&#39;vc.0" expl="loop invariant init" proved="true">
+  <proof prover="1" timelimit="10"><result status="valid" time="0.12" steps="7980"/></proof>
+  </goal>
+  <goal name="insertion_sort3&#39;vc.1" expl="loop invariant init" proved="true">
+  <proof prover="1" timelimit="10"><result status="valid" time="0.17" steps="10568"/></proof>
+  </goal>
+  <goal name="insertion_sort3&#39;vc.2" expl="loop invariant init" proved="true">
+  <proof prover="1" timelimit="10"><result status="valid" time="0.14" steps="8483"/></proof>
+  </goal>
+  <goal name="insertion_sort3&#39;vc.3" expl="loop invariant init" proved="true">
+  <proof prover="1" timelimit="10"><result status="valid" time="0.12" steps="8271"/></proof>
+  </goal>
+  <goal name="insertion_sort3&#39;vc.4" expl="loop invariant init" proved="true">
+  <proof prover="1" timelimit="10"><result status="valid" time="0.12" steps="8105"/></proof>
+  </goal>
+  <goal name="insertion_sort3&#39;vc.5" expl="loop invariant init" proved="true">
+  <proof prover="1" timelimit="10"><result status="valid" time="0.20" steps="12067"/></proof>
+  </goal>
+  <goal name="insertion_sort3&#39;vc.6" expl="loop invariant init" proved="true">
+  <proof prover="1" timelimit="10"><result status="valid" time="0.11" steps="8554"/></proof>
+  </goal>
+  <goal name="insertion_sort3&#39;vc.7" expl="index in array bounds" proved="true">
+  <proof prover="1" timelimit="10"><result status="valid" time="0.15" steps="10898"/></proof>
+  </goal>
+  <goal name="insertion_sort3&#39;vc.8" expl="index in array bounds" proved="true">
+  <proof prover="1" timelimit="10"><result status="valid" time="0.16" steps="10919"/></proof>
+  </goal>
+  <goal name="insertion_sort3&#39;vc.9" expl="precondition" proved="true">
+  <proof prover="1" timelimit="10"><result status="valid" time="0.16" steps="11037"/></proof>
+  </goal>
+  <goal name="insertion_sort3&#39;vc.10" expl="loop variant decrease" proved="true">
+  <proof prover="1" timelimit="10"><result status="valid" time="0.14" steps="8573"/></proof>
+  </goal>
+  <goal name="insertion_sort3&#39;vc.11" expl="loop invariant preservation" proved="true">
+  <proof prover="1" timelimit="10"><result status="valid" time="0.15" steps="9192"/></proof>
+  </goal>
+  <goal name="insertion_sort3&#39;vc.12" expl="loop invariant preservation" proved="true">
+  <proof prover="1" timelimit="10"><result status="valid" time="0.20" steps="13507"/></proof>
+  </goal>
+  <goal name="insertion_sort3&#39;vc.13" expl="loop invariant preservation" proved="true">
+  <proof prover="1" timelimit="10"><result status="valid" time="0.40" steps="30184"/></proof>
+  </goal>
+  <goal name="insertion_sort3&#39;vc.14" expl="loop invariant preservation" proved="true">
+  <proof prover="0" obsolete="true"><result status="timeout" time="1.00" steps="772020"/></proof>
+  <proof prover="1" obsolete="true"><result status="timeout" time="1.00" steps="58893"/></proof>
+  <transf name="split_vc" proved="true" >
+   <goal name="insertion_sort3&#39;vc.14.0" expl="loop invariant preservation" proved="true">
+   <proof prover="0" obsolete="true"><result status="timeout" time="1.00" steps="835909"/></proof>
+   <proof prover="1" timelimit="10"><result status="valid" time="0.91" steps="64001"/></proof>
+   </goal>
+  </transf>
+  </goal>
+  <goal name="insertion_sort3&#39;vc.15" expl="loop invariant preservation" proved="true">
+  <proof prover="1" timelimit="10"><result status="valid" time="0.32" steps="21261"/></proof>
+  </goal>
+  <goal name="insertion_sort3&#39;vc.16" expl="loop invariant preservation" proved="true">
+  <proof prover="1" timelimit="10"><result status="valid" time="0.13" steps="8438"/></proof>
+  </goal>
+  <goal name="insertion_sort3&#39;vc.17" expl="loop invariant preservation" proved="true">
+  <proof prover="1" timelimit="10"><result status="valid" time="0.32" steps="23718"/></proof>
+  </goal>
+  <goal name="insertion_sort3&#39;vc.18" expl="postcondition" proved="true">
+  <proof prover="1" timelimit="10"><result status="valid" time="0.17" steps="9469"/></proof>
+  </goal>
+  <goal name="insertion_sort3&#39;vc.19" expl="postcondition" proved="true">
+  <proof prover="1" timelimit="10"><result status="valid" time="0.15" steps="9789"/></proof>
+  </goal>
+ </transf>
+ </goal>
+</theory>
+</file>
+</why3session>

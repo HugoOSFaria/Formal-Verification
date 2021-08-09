@@ -1,0 +1,55 @@
+c Loiro -> 1
+c Ir ao Sábado -> 2
+c Adulto -> 3
+c Usar chapéu -> 4
+c Usar anel -> 5
+
+c Os sócios loiros não podem ir ao Sábado.
+c 1 -> -2 ou seja -1 \/ -2
+c Quem não for adulto têm que usar chapéu.
+c -3 -> 4 ou seja 3 \/ 4
+c Cada sócio usa anel ou não usa chapéu.
+c 5 \/ -4
+c Um sócio vai ao Sábado se e só se é adulto.
+c 2 <=> 3 ou seja (2 -> 3) /\ (3 -> 2)
+c ou seja (-2 \/ 3) /\ (-3 \/ 2)
+c Todos os sócios adultos têm que usar anel.
+c 3 -> 5 ou seja -3 \/ 5
+c Quem usa anel tem que ser loiro.
+c 5 -> 1 ou seja -5 \/ 1
+
+p cnf 5 7
+-1 -2 0
+3 4 0
+5 -4 0
+-2 3 0
+-3 2 0
+-3 5 0
+-5 1 0
+
+c É satisfazivel
+
+c Quem usa anel não pode ir ao Sábado
+c 5 -> -2 ou seja -5 \/ -2. Como queremos ver se é sempre verdade
+c - (-5 \/ -2) ou seja 5 /\ 2
+
+c 5 0
+c 2 0
+
+c UNSAT logo é correcta
+
+c Pode um sócio de chapéu ser loiro
+c 1 /\ 4.
+
+c 1 0
+c 4 0
+
+c É satisfazivel
+
+c Afinal a associação não pode ter sócios adultos
+c -3. Como queremos ver se é sempre verdade
+c - (-3) ou seja 3
+
+c 3 0
+
+c UNSAT logo a afirmação é correta

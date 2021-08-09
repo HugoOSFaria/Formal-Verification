@@ -1,0 +1,201 @@
+
+
+
+theory Exprs
+
+use map.Map
+use map.Const
+
+use int.Int 
+
+
+
+
+(* identifiers *)
+
+type ident
+
+function mk_ident int : ident
+
+
+
+
+(* expressions *)
+
+type operator = Oplus | Ominus | Omult
+
+type expr =
+  | Econst int
+  | Evar ident
+  | Ebin expr operator expr
+
+
+(* program states *)
+
+type state = map ident int
+
+
+
+(* semantics of expressions *)
+function eval_bin(x:int)(op:operator)(y:int): int =
+ match op with
+ | Oplus -> (x+y)
+ | Ominus -> (x-y)
+ | Omult -> (x*y)
+end
+
+function eval_expr (s:state) (e:expr) : int =
+match e with
+ |Econst x -> x
+ |Evar c -> s c
+ |Ebin e1 op e2 -> (eval_bin(eval_expr s e1) op (eval_expr s e2))
+end
+
+  goal Test13 :
+    let s = const 0 in
+    eval_expr s (Econst 13) = 13
+
+  goal Test42 :
+    let x = mk_ident 0 in
+    let s = set (const 0) x 42 in
+    eval_expr s (Evar x) = 42
+
+  goal Test55 :
+    let x = mk_ident 0 in
+    let s = set (const 0) x 42 in
+    eval_expr s (Ebin (Evar x) Oplus (Econst 13)) = 55
+
+
+(* semantics of expressions as an evaluation relation   *)
+(* this always terminates, and thus was written as a    *)
+(* function before, but we can write it as an inductive *)
+(* predicate and prove a correspondence between the two *)
+
+  inductive eval_expr_rel state expr state int =
+    | econst : forall n:int, s:state.
+               eval_expr_rel s (Econst n) s n
+    | evar : forall n:ident, s:state.
+             eval_expr_rel s (Evar n) s (get s n)
+    | ebin : forall e1,e2:expr,op:operator,s1,s2,s3:state,n1,n2:int.
+             (eval_expr_rel s1 e1 s2 n1) -> (eval_expr_rel s2 e2 s3 n2) -> (eval_expr_rel s1 (Ebin e1 op e2) s3 (eval_bin n1 op n2))
+ 
+  goal Test13r :
+    let s = const 0 in
+    eval_expr_rel s (Econst 13) s 13
+
+  goal Test42r :
+    let x = mk_ident 0 in
+    let s = set (const 0) x 42 in
+    eval_expr_rel s (Evar x) s 42
+
+(*Para provar o Test55r tem de se fazer split_vc, seguido do assert (eval_expr_rel s (Evar x) s 42)
+a 0 e o assert (eval_expr_rel s (Econst 13) s 13) a 1*)
+  goal Test55r :
+    let x = mk_ident 0 in
+    let s = set (const 0) x 42 in
+    eval_expr_rel s (Ebin (Evar x) Oplus (Econst 13)) s 55
+
+
+(*Sendo s1 o estado antes e s2 o estados depois podemos prover que não se altera após a execução
+da seguinte maneira.*)
+lemma no_side_effects:
+      forall s1,s2:state,e:expr,n:int. (eval_expr_rel s1 e s2 n) -> s1 = s2
+(*Para provar este lema basta fazer induction_pr*)      
+      
+(*Para provar este lema temos duas maneiras:
+Sem induction_pr: Fazer split_all_full e aplicar induction_ty_lex a 0 e 1
+Com induction_pr: Fazer split_all_full, aplicar induction_pr a 0 e aplicar induction_ty_lex a 1*)
+lemma expr_eval:
+      forall e:expr, s:state, n:int.
+      eval_expr_rel s e s n <-> (eval_expr s e = n)
+   
+
+goal Test55r2 :
+    let x = mk_ident 0 in
+    let s = set (const 0) x 42 in
+    eval_expr_rel s (Ebin (Evar x) Oplus (Econst 13)) s 55
+
+    
+end
+
+
+
+theory Programs
+
+use map.Map 
+use map.Const
+
+use Exprs
+
+
+
+(* statements *)
+
+type stmt =
+  | Sskip
+  | Sassign ident expr
+  | Sseq stmt stmt
+  | Sif expr stmt stmt
+  | Swhile expr stmt
+
+
+
+(* big step semantics *)
+
+  inductive big_step state stmt state =
+  | big_step_skip:
+    forall s:state.
+     big_step s Sskip s
+  | big_step_seq:
+    forall s1 s2 s3:state, i1 i2:stmt.
+      big_step s1 i1 s2  ->
+      big_step s2 i2 s3  ->
+      big_step s1 (Sseq i1 i2) s3 
+  | big_step_assign:
+    forall s:state, id:ident, e:expr.
+     big_step s (Sassign id e) s[id <- eval_expr s e]
+  | big_step_if_true:
+    forall s1,s2:state, sm1,sm2:stmt, ex:expr.
+     (eval_expr s1 ex) = 0 -> big_step s1 sm1 s2 -> big_step s1 (Sif ex sm1 sm2) s2
+  | big_step_if_false:
+    forall s1,s2:state, sm1,sm2:stmt, ex:expr.
+     not (eval_expr s1 ex) = 0 -> big_step s1 sm2 s2 -> big_step s1 (Sif ex sm1 sm2) s2
+  | big_step_while_true:
+    forall s1,s2:state, sm:stmt, ex:expr.
+    (eval_expr s1 ex) = 0 -> big_step s1 sm s2 -> big_step s1 (Swhile ex sm) s2
+  | big_step_while_false:
+    forall s1,s2:state, sm:stmt, ex:expr.
+     not (eval_expr s1 ex) = 0 -> big_step s1 Sskip s2 -> big_step s1 (Swhile ex sm) s2   
+
+(*Prova diretamente*)
+  goal Assign42 :
+    let x = mk_ident 0 in
+    let s = const 0 in
+    forall s':state.
+      big_step s (Sassign x (Econst 42)) s' ->
+        get s' x = 42
+
+(*Prova diretamente*)
+  goal If42 :
+    let x = mk_ident 0 in
+    let s = set (const 0) x 0 in
+    forall s1:state, i:stmt.
+      big_step s
+        (Sif (Evar x)
+             (Sassign x (Econst 13))
+             (Sassign x (Econst 42)))
+	 s1 ->
+	 get s1 x = 13
+
+
+(*Para provar basta fazer induction_pr*)
+  goal big_step_determinism:
+    forall s s':state, i :stmt.
+      big_step s i s'  ->  forall s'': state. big_step s i s''  -> s' = s''
+
+
+
+
+end
+
+

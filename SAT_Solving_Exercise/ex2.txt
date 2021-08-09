@@ -1,0 +1,37 @@
+Para o problema do Sudoku precisamos de ter as seguintes restrições:
+
+- Todas as células têm de ter um número de 1 até N^2
+
+Para toda a linha e coluna <= N^2     4
+                                      \/  x(l,c,n)
+                                      n=1
+
+- Todas as linhas não devem ter elementos repetidos
+
+Para todo o número e coluna <= N^2   3  4
+                                     /\ /\    -x(l,c,n) \/ -x(b,c,n)
+                                    l=1 b=l+1
+
+
+- Todas as colunas não devem ter elementos repetidos
+
+Para todo o número e linha <= N^2   3  4
+                                     /\ /\    -x(l,c,n) \/ -x(l,b,n)
+                                    c=1 b=c+1
+
+- Todas as células só podem ter um elemento
+
+Para toda a linha e coluna <= N^2    3  4
+                                     /\ /\    -x(l,c,n) \/ -x(l,c,b)
+                                    n=1 b=n+1
+
+Tem se ainda que garantir que os quadrados dentro do sudoku não têm números repetidos ficando uma restrição do estilo
+
+(-111 \/ -121) /\ (-111 \/ -211) /\ (-111 \/ -221) /\ (-121 \/ -211) /\ (-121 \/ -221) /\ (-211 \/ -221)
+
+etc, sendo este o caso que diz que não pode haver mais que um número 1 no primeiro quadrado
+
+Ter-se-á ainda que adicionar as restrições dos numeros que já estão no sudoku, ou seja, 114 para o primeiro número 4 do exemplo, 131 para o primeiro número 1, etc
+
+Foi então criado um programa em python que pede os números que já estão no sudoku (em formato lcn) e que devolve o cnf para enviar ao SAT solver
+Os números do cnf são escritos com base num dicionário que associa x111 : 1, x112 : 2, x113 : 3, x114 : 4, x121 : 5, etc
